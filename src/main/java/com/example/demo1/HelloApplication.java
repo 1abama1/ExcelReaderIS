@@ -79,7 +79,7 @@ public class HelloApplication extends Application {
             }
         });
 
-        stage.setTitle("Али-Нур не сигма");
+        stage.setTitle("йоу йоу йоу");
         stage.setScene(scene);
         stage.show();
     }
