@@ -37,8 +37,6 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Button button = new Button("Открыть йоу");
-
-
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         xAxis.setLabel("Месяц");
@@ -65,14 +63,16 @@ public class HelloApplication extends Application {
             fileChooser.setTitle("Открыть йоу");
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel files", "*.xls", "*.xlsx"));
             file = fileChooser.showOpenDialog(stage);
-            lol = countRow(file);
             try {
                 productSaleList.clear();
                 yearlySales.clear();
                 ExcelRead(file, productSaleList);
                 lineChart.setVisible(true);
                 updaterLines(series,productSaleList,yearlySales);
-
+                lineChart.setVisible(false);
+                lineChart.applyCss();
+                lineChart.layout();
+                lineChart.setVisible(true);
             } catch (IOException e) {
                 lineChart.setVisible(false);
                 throw new RuntimeException(e);
@@ -107,11 +107,10 @@ public class HelloApplication extends Application {
     public static int getYearFromDate(String dateStr) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         try {
-            // Парсинг строки в объект Date
             java.util.Date date = dateFormat.parse(dateStr);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
-            return calendar.get(Calendar.YEAR);  // Получаем год
+            return calendar.get(Calendar.YEAR);
         } catch (ParseException e) {
             e.printStackTrace();
             return -1;
@@ -120,14 +119,13 @@ public class HelloApplication extends Application {
     public static int getMonthFromDate(String dateStr) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         try {
-            // Парсинг строки в объект Date
             java.util.Date date = dateFormat.parse(dateStr);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
-            return calendar.get(Calendar.MONTH) + 1;  // Месяцы в Calendar начинаются с 0
+            return calendar.get(Calendar.MONTH) + 1;
         } catch (ParseException e) {
             e.printStackTrace();
-            return -1;  // Если ошибка парсинга, вернуть -1
+            return -1;
         }
     }
     public static String getMonthName(int month) {
@@ -141,24 +139,6 @@ public class HelloApplication extends Application {
         button.setOnAction(event -> {
             stage.setScene(scene);
         });
-    }
-    public static int countRow(File file){
-        int count = 0;
-        if (file != null) {
-            try (FileInputStream fis = new FileInputStream(file);
-                 Workbook workbook = new XSSFWorkbook(fis)) {
-                Sheet sheet = workbook.getSheetAt(0);
-                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                    Row row = sheet.getRow(i);
-                    if (row != null) {
-                        count++;
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return count;
     }
     public static void ExcelRead(File file, ArrayList<ProductSale> productSaleList) throws IOException {
         if (file != null) {
